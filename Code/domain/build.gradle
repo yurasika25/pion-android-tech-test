@@ -1,0 +1,12 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+def versions = rootProject.ext
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines_version}"
+}
