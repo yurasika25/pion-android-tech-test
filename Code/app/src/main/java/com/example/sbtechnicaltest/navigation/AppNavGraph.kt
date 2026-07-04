@@ -12,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sbtechnicaltest.feature.login.presentation.LoginScreen
 import com.example.sbtechnicaltest.feature.login.presentation.LoginUiEvent
 import com.example.sbtechnicaltest.feature.login.presentation.LoginViewModel
-import com.example.sbtechnicaltest.feature.photos.presentation.PhotosPlaceholderScreen
+import com.example.sbtechnicaltest.feature.photos.presentation.PhotosRoute
 
 @Composable
 fun AppNavGraph(
@@ -49,7 +49,7 @@ fun AppNavGraph(
         }
 
         composable(Screen.Photos.route) {
-            PhotosPlaceholderScreen()
+            PhotosRoute()
         }
     }
 }
