@@ -1,5 +1,6 @@
 package com.example.sbtechnicaltest.feature.login.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,90 +82,96 @@ private fun LoginContent(
             .imePadding(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .widthIn(max = 520.dp)
                 .fillMaxSize()
+                .navigationBarsPadding()
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            item {
+                Column {
+                    Spacer(modifier = Modifier.height(80.dp))
 
-            Text(
-                text = stringResource(R.string.login_title),
-                color = StudentBeansPrimaryText,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 32.sp,
-            )
+                    Text(
+                        text = stringResource(R.string.login_title),
+                        color = StudentBeansPrimaryText,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 32.sp,
+                    )
 
-            Text(
-                text = stringResource(R.string.login_subtitle),
-                color = StudentBeansSecondaryText,
-                fontSize = 17.sp,
-                lineHeight = 24.sp,
-                modifier = Modifier.padding(top = 8.dp),
-            )
+                    Text(
+                        text = stringResource(R.string.login_subtitle),
+                        color = StudentBeansSecondaryText,
+                        fontSize = 17.sp,
+                        lineHeight = 24.sp,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
 
-            Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
 
-            LoginTextField(
-                value = uiState.username,
-                onValueChange = onUsernameChanged,
-                placeholder = stringResource(R.string.login_email_label),
-                isError = uiState.usernameErrorResId != null,
-                errorMessage = uiState.usernameErrorResId?.let { stringResource(it) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                ),
-            )
+                    LoginTextField(
+                        value = uiState.username,
+                        onValueChange = onUsernameChanged,
+                        placeholder = stringResource(R.string.login_email_label),
+                        isError = uiState.usernameErrorResId != null,
+                        errorMessage = uiState.usernameErrorResId?.let { stringResource(it) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
+                    )
 
-            Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
 
-            LoginTextField(
-                value = uiState.password,
-                onValueChange = onPasswordChanged,
-                placeholder = stringResource(R.string.login_password_label),
-                isError = uiState.passwordErrorResId != null,
-                errorMessage = uiState.passwordErrorResId?.let { stringResource(it) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onLoginClicked() },
-                ),
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = onLoginClicked,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = StudentBeansAccent,
-                    contentColor = Color.White,
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    focusedElevation = 0.dp,
-                    hoveredElevation = 0.dp,
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.login_button),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal,
-                )
+                    LoginTextField(
+                        value = uiState.password,
+                        onValueChange = onPasswordChanged,
+                        placeholder = stringResource(R.string.login_password_label),
+                        isError = uiState.passwordErrorResId != null,
+                        errorMessage = uiState.passwordErrorResId?.let { stringResource(it) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { onLoginClicked() },
+                        ),
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            item {
+                Button(
+                    onClick = onLoginClicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = StudentBeansAccent,
+                        contentColor = Color.White,
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 0.dp,
+                        focusedElevation = 0.dp,
+                        hoveredElevation = 0.dp,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.login_button),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Normal,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }
