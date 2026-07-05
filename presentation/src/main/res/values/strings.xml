@@ -1,0 +1,16 @@
+<resources>
+    <string name="login_title">Welcome back</string>
+    <string name="login_subtitle">Log in to your Student Beans account</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_password_label">Password</string>
+    <string name="login_button">Log in</string>
+    <string name="login_username_or_email_required_error">Username or email is required</string>
+    <string name="login_password_required_error">Password is required</string>
+
+    <string name="photos_title">Photos</string>
+    <string name="photos_back_content_description">Back to login</string>
+    <string name="photos_search_placeholder">Search photos</string>
+    <string name="photos_retry_button">Retry</string>
+    <string name="photos_empty_message">No photos found</string>
+    <string name="photos_image_content_description">Photo: %1$s</string>
+</resources>

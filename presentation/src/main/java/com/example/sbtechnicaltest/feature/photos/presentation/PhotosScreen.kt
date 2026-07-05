@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
+import com.example.sbtechnicaltest.presentation.R
 import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
 import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
 import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
@@ -84,7 +86,7 @@ fun PhotosScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Photos",
+                        text = stringResource(R.string.photos_title),
                         color = StudentBeansPrimaryText,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
@@ -104,7 +106,9 @@ fun PhotosScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back to login",
+                            contentDescription = stringResource(
+                                R.string.photos_back_content_description,
+                            ),
                             tint = StudentBeansSecondaryText,
                             modifier = Modifier.size(28.dp),
                         )
@@ -132,7 +136,7 @@ fun PhotosScreen(
                     .height(56.dp),
                 placeholder = {
                     Text(
-                        text = "Search photos",
+                        text = stringResource(R.string.photos_search_placeholder),
                         color = StudentBeansSecondaryText,
                     )
                 },
@@ -205,7 +209,7 @@ private fun ErrorContent(
                 contentColor = Color.White,
             ),
         ) {
-            Text("Retry")
+            Text(stringResource(R.string.photos_retry_button))
         }
     }
 }
@@ -217,7 +221,7 @@ private fun EmptyContent() {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "No photos found",
+            text = stringResource(R.string.photos_empty_message),
             color = StudentBeansSecondaryText,
             style = MaterialTheme.typography.bodyLarge,
         )
@@ -255,7 +259,10 @@ private fun PhotoCard(
     ) {
         AsyncImage(
             model = photo.thumbnailUrl,
-            contentDescription = photo.title,
+            contentDescription = stringResource(
+                R.string.photos_image_content_description,
+                photo.title,
+            ),
             modifier = Modifier
                 .size(104.dp)
                 .background(Color.White),

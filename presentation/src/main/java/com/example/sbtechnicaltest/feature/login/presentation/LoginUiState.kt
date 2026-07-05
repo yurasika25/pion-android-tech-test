@@ -1,8 +1,10 @@
 package com.example.sbtechnicaltest.feature.login.presentation
 
+import androidx.annotation.StringRes
+
 data class LoginUiState(
     val username: String = "",
     val password: String = "",
-    val usernameError: String? = null,
-    val passwordError: String? = null,
+    @get:StringRes val usernameErrorResId: Int? = null,
+    @get:StringRes val passwordErrorResId: Int? = null,
 )

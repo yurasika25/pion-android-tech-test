@@ -1,6 +1,7 @@
 package com.example.sbtechnicaltest.feature.login.presentation
 
 import com.example.sbtechnicaltest.MainDispatcherRule
+import com.example.sbtechnicaltest.presentation.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -31,10 +32,10 @@ class LoginViewModelTest {
         viewModel.onLoginClicked()
 
         assertEquals(
-            "Username or email is required",
-            viewModel.uiState.value.usernameError,
+            R.string.login_username_or_email_required_error,
+            viewModel.uiState.value.usernameErrorResId,
         )
-        assertNull(viewModel.uiState.value.passwordError)
+        assertNull(viewModel.uiState.value.passwordErrorResId)
     }
 
     @Test
@@ -43,10 +44,10 @@ class LoginViewModelTest {
 
         viewModel.onLoginClicked()
 
-        assertNull(viewModel.uiState.value.usernameError)
+        assertNull(viewModel.uiState.value.usernameErrorResId)
         assertEquals(
-            "Password is required",
-            viewModel.uiState.value.passwordError,
+            R.string.login_password_required_error,
+            viewModel.uiState.value.passwordErrorResId,
         )
     }
 
@@ -55,12 +56,12 @@ class LoginViewModelTest {
         viewModel.onLoginClicked()
 
         assertEquals(
-            "Username or email is required",
-            viewModel.uiState.value.usernameError,
+            R.string.login_username_or_email_required_error,
+            viewModel.uiState.value.usernameErrorResId,
         )
         assertEquals(
-            "Password is required",
-            viewModel.uiState.value.passwordError,
+            R.string.login_password_required_error,
+            viewModel.uiState.value.passwordErrorResId,
         )
     }
 

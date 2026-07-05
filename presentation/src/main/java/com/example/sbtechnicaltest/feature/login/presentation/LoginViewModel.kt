@@ -2,6 +2,7 @@ package com.example.sbtechnicaltest.feature.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sbtechnicaltest.presentation.R
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,7 @@ class LoginViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 username = value,
-                usernameError = null,
+                usernameErrorResId = null,
             )
         }
     }
@@ -31,32 +32,32 @@ class LoginViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 password = value,
-                passwordError = null,
+                passwordErrorResId = null,
             )
         }
     }
 
     fun onLoginClicked() {
         val currentState = _uiState.value
-        val usernameError = if (currentState.username.isBlank()) {
-            "Username or email is required"
+        val usernameErrorResId = if (currentState.username.isBlank()) {
+            R.string.login_username_or_email_required_error
         } else {
             null
         }
-        val passwordError = if (currentState.password.isBlank()) {
-            "Password is required"
+        val passwordErrorResId = if (currentState.password.isBlank()) {
+            R.string.login_password_required_error
         } else {
             null
         }
 
         _uiState.update {
             it.copy(
-                usernameError = usernameError,
-                passwordError = passwordError,
+                usernameErrorResId = usernameErrorResId,
+                passwordErrorResId = passwordErrorResId,
             )
         }
 
-        if (usernameError == null && passwordError == null) {
+        if (usernameErrorResId == null && passwordErrorResId == null) {
             viewModelScope.launch {
                 _events.send(LoginUiEvent.NavigateToPhotos)
             }

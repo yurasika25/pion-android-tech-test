@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.sbtechnicaltest.presentation.R
 import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
 import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
 import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
@@ -85,7 +87,7 @@ private fun LoginContent(
             Spacer(modifier = Modifier.height(80.dp))
 
             Text(
-                text = "Welcome back",
+                text = stringResource(R.string.login_title),
                 color = StudentBeansPrimaryText,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
@@ -93,7 +95,7 @@ private fun LoginContent(
             )
 
             Text(
-                text = "Log in to your Student Beans account",
+                text = stringResource(R.string.login_subtitle),
                 color = StudentBeansSecondaryText,
                 fontSize = 17.sp,
                 lineHeight = 24.sp,
@@ -105,9 +107,9 @@ private fun LoginContent(
             LoginTextField(
                 value = uiState.username,
                 onValueChange = onUsernameChanged,
-                placeholder = "Email",
-                isError = uiState.usernameError != null,
-                errorMessage = uiState.usernameError,
+                placeholder = stringResource(R.string.login_email_label),
+                isError = uiState.usernameErrorResId != null,
+                errorMessage = uiState.usernameErrorResId?.let { stringResource(it) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next,
@@ -119,9 +121,9 @@ private fun LoginContent(
             LoginTextField(
                 value = uiState.password,
                 onValueChange = onPasswordChanged,
-                placeholder = "Password",
-                isError = uiState.passwordError != null,
-                errorMessage = uiState.passwordError,
+                placeholder = stringResource(R.string.login_password_label),
+                isError = uiState.passwordErrorResId != null,
+                errorMessage = uiState.passwordErrorResId?.let { stringResource(it) },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -152,7 +154,7 @@ private fun LoginContent(
                 ),
             ) {
                 Text(
-                    text = "Log in",
+                    text = stringResource(R.string.login_button),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Normal,
                 )
