@@ -1,4 +1,4 @@
-package com.example.sbtechnicaltest.core.ui.theme
+package com.example.sbtechnicaltest.presentation.design
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme

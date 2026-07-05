@@ -31,9 +31,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sbtechnicaltest.presentation.R
+import com.example.sbtechnicaltest.presentation.design.SBTechnicalTestTheme
 import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
 import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
 import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
@@ -220,4 +222,43 @@ private fun LoginTextField(
             unfocusedPlaceholderColor = StudentBeansPrimaryText,
         ),
     )
+}
+
+@Preview(
+    name = "Login - Default",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun LoginScreenPreview() {
+    LoginScreenPreviewContent(uiState = LoginUiState())
+}
+
+@Preview(
+    name = "Login - Validation Errors",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun LoginScreenValidationErrorsPreview() {
+    LoginScreenPreviewContent(
+        uiState = LoginUiState(
+            usernameErrorResId = R.string.login_username_or_email_required_error,
+            passwordErrorResId = R.string.login_password_required_error,
+        ),
+    )
+}
+
+@Composable
+private fun LoginScreenPreviewContent(
+    uiState: LoginUiState,
+) {
+    SBTechnicalTestTheme {
+        LoginScreen(
+            uiState = uiState,
+            onUsernameChanged = {},
+            onPasswordChanged = {},
+            onLoginClicked = {},
+        )
+    }
 }

@@ -42,6 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -49,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
 import com.example.sbtechnicaltest.presentation.R
+import com.example.sbtechnicaltest.presentation.design.SBTechnicalTestTheme
 import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
 import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
 import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
@@ -285,5 +287,75 @@ private fun PhotoCard(
                 lineHeight = 25.sp,
             )
         }
+    }
+}
+
+@Preview(
+    name = "Photos - Loading",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun PhotosScreenLoadingPreview() {
+    PhotosScreenPreviewContent(uiState = PhotosUiState(isLoading = true))
+}
+
+@Preview(
+    name = "Photos - Success",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun PhotosScreenSuccessPreview() {
+    PhotosScreenPreviewContent(
+        uiState = PhotosUiState(
+            isLoading = false,
+            photos = listOf(
+                PhotoItem(1, "Essence Mascara Lash Princess", ""),
+                PhotoItem(2, "Eyeshadow Palette with Mirror", ""),
+                PhotoItem(3, "Red Lipstick", ""),
+            ),
+        ),
+    )
+}
+
+@Preview(
+    name = "Photos - Error",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun PhotosScreenErrorPreview() {
+    PhotosScreenPreviewContent(
+        uiState = PhotosUiState(
+            isLoading = false,
+            errorMessage = stringResource(R.string.photos_load_error),
+        ),
+    )
+}
+
+@Preview(
+    name = "Photos - Empty",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun PhotosScreenEmptyPreview() {
+    PhotosScreenPreviewContent(
+        uiState = PhotosUiState(isLoading = false),
+    )
+}
+
+@Composable
+private fun PhotosScreenPreviewContent(
+    uiState: PhotosUiState,
+) {
+    SBTechnicalTestTheme {
+        PhotosScreen(
+            uiState = uiState,
+            onSearchQueryChanged = {},
+            onRetryClicked = {},
+            onBackClick = {},
+        )
     }
 }

@@ -10,6 +10,7 @@
     <string name="photos_title">Photos</string>
     <string name="photos_back_content_description">Back to login</string>
     <string name="photos_search_placeholder">Search photos</string>
+    <string name="photos_load_error">Unable to load photos. Please try again.</string>
     <string name="photos_retry_button">Retry</string>
     <string name="photos_empty_message">No photos found</string>
     <string name="photos_image_content_description">Photo: %1$s</string>

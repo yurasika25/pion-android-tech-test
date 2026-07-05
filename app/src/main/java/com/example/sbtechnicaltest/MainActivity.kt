@@ -7,8 +7,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
-import com.example.sbtechnicaltest.core.ui.theme.SBTechnicalTestTheme
 import com.example.sbtechnicaltest.navigation.AppNavGraph
+import com.example.sbtechnicaltest.presentation.design.SBTechnicalTestTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

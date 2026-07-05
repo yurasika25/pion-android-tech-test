@@ -33,6 +33,7 @@ dependencies {
 
     implementation platform("androidx.compose:compose-bom:${versions.compose_bom_version}")
     implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material:material-icons-core'
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.lifecycle:lifecycle-runtime-compose:${versions.lifecycle_version}"
@@ -43,6 +44,8 @@ dependencies {
     implementation "com.google.dagger:hilt-android:${versions.hilt_version}"
     kapt "com.google.dagger:hilt-compiler:${versions.hilt_version}"
     implementation "io.coil-kt.coil3:coil-compose:${versions.coil_version}"
+
+    debugImplementation 'androidx.compose.ui:ui-tooling'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines_version}"
