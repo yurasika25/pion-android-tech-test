@@ -2,9 +2,9 @@ package com.example.sbtechnicaltest.feature.photos.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUseCase
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
 import com.example.sbtechnicaltest.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview

@@ -8,7 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import com.example.sbtechnicaltest.navigation.AppNavGraph
-import com.example.sbtechnicaltest.presentation.design.SBTechnicalTestTheme
+import com.example.sbtechnicaltest.design.SBTechnicalTestTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

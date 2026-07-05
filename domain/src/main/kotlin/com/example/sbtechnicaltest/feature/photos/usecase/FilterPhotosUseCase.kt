@@ -1,6 +1,6 @@
-package com.example.sbtechnicaltest.feature.photos.domain.usecase
+package com.example.sbtechnicaltest.feature.photos.usecase
 
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 
 class FilterPhotosUseCase {
 

@@ -1,7 +1,8 @@
 package com.example.sbtechnicaltest.feature.photos.domain.usecase
 
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
-import com.example.sbtechnicaltest.feature.photos.domain.repository.PhotosRepository
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.repository.PhotosRepository
+import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

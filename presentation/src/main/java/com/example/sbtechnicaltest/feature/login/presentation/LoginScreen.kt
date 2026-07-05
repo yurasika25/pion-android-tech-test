@@ -38,12 +38,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sbtechnicaltest.presentation.R
-import com.example.sbtechnicaltest.presentation.design.SBTechnicalTestTheme
-import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
-import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
-import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
-import com.example.sbtechnicaltest.presentation.design.StudentBeansSecondaryText
-import com.example.sbtechnicaltest.presentation.design.StudentBeansSurface
+import com.example.sbtechnicaltest.design.SBTechnicalTestTheme
+import com.example.sbtechnicaltest.design.StudentBeansAccent
+import com.example.sbtechnicaltest.design.StudentBeansBackground
+import com.example.sbtechnicaltest.design.StudentBeansPrimaryText
+import com.example.sbtechnicaltest.design.StudentBeansSecondaryText
+import com.example.sbtechnicaltest.design.StudentBeansSurface
 
 @Composable
 fun LoginScreen(

@@ -1,6 +1,6 @@
-package com.example.sbtechnicaltest.feature.photos.data.remote
+package com.example.sbtechnicaltest.feature.photos.remote
 
-import com.example.sbtechnicaltest.feature.photos.data.remote.dto.ProductsResponseDto
+import com.example.sbtechnicaltest.feature.photos.remote.dto.ProductsResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

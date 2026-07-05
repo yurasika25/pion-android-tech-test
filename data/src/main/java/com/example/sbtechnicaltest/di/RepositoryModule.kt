@@ -1,7 +1,7 @@
 package com.example.sbtechnicaltest.di
 
-import com.example.sbtechnicaltest.feature.photos.data.repository.PhotosRepositoryImpl
-import com.example.sbtechnicaltest.feature.photos.domain.repository.PhotosRepository
+import com.example.sbtechnicaltest.feature.photos.repository.PhotosRepositoryImpl
+import com.example.sbtechnicaltest.feature.photos.repository.PhotosRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

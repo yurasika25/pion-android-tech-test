@@ -1,4 +1,4 @@
-package com.example.sbtechnicaltest.feature.photos.domain.model
+package com.example.sbtechnicaltest.feature.photos.model
 
 data class PhotoItem(
     val id: Int,

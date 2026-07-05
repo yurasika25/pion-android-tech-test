@@ -1,7 +1,7 @@
 package com.example.sbtechnicaltest.feature.photos.presentation
 
 import androidx.annotation.StringRes
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 
 data class PhotosUiState(
     val isLoading: Boolean = true,

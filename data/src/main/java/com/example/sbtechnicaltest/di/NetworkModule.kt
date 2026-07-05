@@ -1,7 +1,7 @@
 package com.example.sbtechnicaltest.di
 
 import com.example.sbtechnicaltest.data.BuildConfig
-import com.example.sbtechnicaltest.feature.photos.data.remote.PhotosApi
+import com.example.sbtechnicaltest.feature.photos.remote.PhotosApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

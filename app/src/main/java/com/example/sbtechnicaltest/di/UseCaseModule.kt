@@ -1,8 +1,8 @@
 package com.example.sbtechnicaltest.di
 
-import com.example.sbtechnicaltest.feature.photos.domain.repository.PhotosRepository
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUseCase
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.repository.PhotosRepository
+import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

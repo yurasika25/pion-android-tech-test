@@ -1,4 +1,4 @@
-package com.example.sbtechnicaltest.feature.photos.data.remote.dto
+package com.example.sbtechnicaltest.feature.photos.remote.dto
 
 data class ProductDto(
     val id: Int,

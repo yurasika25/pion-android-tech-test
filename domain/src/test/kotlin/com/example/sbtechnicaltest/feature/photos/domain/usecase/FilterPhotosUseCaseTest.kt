@@ -1,6 +1,7 @@
 package com.example.sbtechnicaltest.feature.photos.domain.usecase
 
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

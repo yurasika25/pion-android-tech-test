@@ -1,9 +1,8 @@
-package com.example.sbtechnicaltest.feature.photos.data.repository
+package com.example.sbtechnicaltest.feature.photos.repository
 
-import com.example.sbtechnicaltest.feature.photos.data.remote.PhotosApi
-import com.example.sbtechnicaltest.feature.photos.data.mapper.toDomain
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
-import com.example.sbtechnicaltest.feature.photos.domain.repository.PhotosRepository
+import com.example.sbtechnicaltest.feature.photos.remote.PhotosApi
+import com.example.sbtechnicaltest.feature.photos.mapper.toDomain
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 

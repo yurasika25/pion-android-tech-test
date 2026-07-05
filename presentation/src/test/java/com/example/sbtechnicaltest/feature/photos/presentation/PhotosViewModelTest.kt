@@ -1,9 +1,9 @@
 package com.example.sbtechnicaltest.feature.photos.presentation
 
 import com.example.sbtechnicaltest.MainDispatcherRule
-import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUseCase
-import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
+import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
 import com.example.sbtechnicaltest.presentation.R
 import io.mockk.coEvery
 import io.mockk.coVerify
