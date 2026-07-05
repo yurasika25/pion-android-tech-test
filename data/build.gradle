@@ -4,6 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.dagger.hilt.android'
 
 def versions = rootProject.ext
+def baseUrl = providers.gradleProperty("DUMMY_JSON_BASE_URL").get()
 
 android {
     namespace 'com.example.sbtechnicaltest.data'
@@ -11,6 +12,7 @@ android {
 
     defaultConfig {
         minSdkVersion rootProject.ext.min_sdk_version
+        buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
     }
 
     compileOptions {
