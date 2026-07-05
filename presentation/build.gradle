@@ -33,6 +33,7 @@ dependencies {
 
     implementation platform("androidx.compose:compose-bom:${versions.compose_bom_version}")
     implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.material:material-icons-core'
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.lifecycle:lifecycle-runtime-compose:${versions.lifecycle_version}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle_version}"

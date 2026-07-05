@@ -31,9 +31,7 @@ fun AppNavGraph(
                     when (event) {
                         LoginUiEvent.NavigateToPhotos -> {
                             navController.navigate(Screen.Photos.route) {
-                                popUpTo(Screen.Login.route) {
-                                    inclusive = true
-                                }
+                                launchSingleTop = true
                             }
                         }
                     }
@@ -49,7 +47,9 @@ fun AppNavGraph(
         }
 
         composable(Screen.Photos.route) {
-            PhotosRoute()
+            PhotosRoute(
+                onBackClick = navController::popBackStack,
+            )
         }
     }
 }

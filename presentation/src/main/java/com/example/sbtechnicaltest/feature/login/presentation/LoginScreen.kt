@@ -1,6 +1,5 @@
 package com.example.sbtechnicaltest.feature.login.presentation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,22 +7,36 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.sbtechnicaltest.presentation.design.StudentBeansAccent
+import com.example.sbtechnicaltest.presentation.design.StudentBeansBackground
+import com.example.sbtechnicaltest.presentation.design.StudentBeansPrimaryText
+import com.example.sbtechnicaltest.presentation.design.StudentBeansSecondaryText
+import com.example.sbtechnicaltest.presentation.design.StudentBeansSurface
 
 @Composable
 fun LoginScreen(
@@ -33,7 +46,10 @@ fun LoginScreen(
     onLoginClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        containerColor = StudentBeansBackground,
+    ) { innerPadding ->
         LoginContent(
             uiState = uiState,
             onUsernameChanged = onUsernameChanged,
@@ -56,51 +72,56 @@ private fun LoginContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
-            .padding(horizontal = 24.dp),
-        contentAlignment = Alignment.Center,
+            .imePadding(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .widthIn(max = 480.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .widthIn(max = 520.dp)
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.Start,
         ) {
+            Spacer(modifier = Modifier.height(80.dp))
+
             Text(
                 text = "Welcome back",
-                style = MaterialTheme.typography.headlineMedium,
+                color = StudentBeansPrimaryText,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 32.sp,
+            )
+
+            Text(
+                text = "Log in to your Student Beans account",
+                color = StudentBeansSecondaryText,
+                fontSize = 17.sp,
+                lineHeight = 24.sp,
+                modifier = Modifier.padding(top = 8.dp),
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            OutlinedTextField(
+            LoginTextField(
                 value = uiState.username,
                 onValueChange = onUsernameChanged,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Username or email") },
-                singleLine = true,
+                placeholder = "Email",
                 isError = uiState.usernameError != null,
-                supportingText = uiState.usernameError?.let { error ->
-                    { Text(text = error) }
-                },
+                errorMessage = uiState.usernameError,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next,
                 ),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            OutlinedTextField(
+            LoginTextField(
                 value = uiState.password,
                 onValueChange = onPasswordChanged,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") },
-                singleLine = true,
+                placeholder = "Password",
                 isError = uiState.passwordError != null,
-                supportingText = uiState.passwordError?.let { error ->
-                    { Text(text = error) }
-                },
+                errorMessage = uiState.passwordError,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -111,14 +132,90 @@ private fun LoginContent(
                 ),
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = onLoginClicked,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = StudentBeansAccent,
+                    contentColor = Color.White,
+                ),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    focusedElevation = 0.dp,
+                    hoveredElevation = 0.dp,
+                ),
             ) {
-                Text("Log in")
+                Text(
+                    text = "Log in",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Normal,
+                )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
+}
+
+@Composable
+private fun LoginTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    isError: Boolean,
+    errorMessage: String?,
+    keyboardOptions: KeyboardOptions,
+    modifier: Modifier = Modifier,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp),
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = StudentBeansPrimaryText,
+                fontSize = 18.sp,
+            )
+        },
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            color = StudentBeansPrimaryText,
+            fontSize = 18.sp,
+            lineHeight = 22.sp,
+        ),
+        singleLine = true,
+        isError = isError,
+        supportingText = errorMessage?.let { error ->
+            {
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+        },
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        shape = RoundedCornerShape(8.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = StudentBeansSurface,
+            unfocusedContainerColor = StudentBeansSurface,
+            errorContainerColor = StudentBeansSurface,
+            focusedBorderColor = StudentBeansAccent,
+            unfocusedBorderColor = Color.Transparent,
+            cursorColor = StudentBeansAccent,
+            focusedPlaceholderColor = StudentBeansPrimaryText,
+            unfocusedPlaceholderColor = StudentBeansPrimaryText,
+        ),
+    )
 }
