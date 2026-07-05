@@ -4,6 +4,7 @@ import com.example.sbtechnicaltest.MainDispatcherRule
 import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUseCase
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
+import com.example.sbtechnicaltest.presentation.R
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -58,7 +59,7 @@ class PhotosViewModelTest {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
-        assertNull(viewModel.uiState.value.errorMessage)
+        assertNull(viewModel.uiState.value.errorMessageResId)
     }
 
     @Test
@@ -73,8 +74,8 @@ class PhotosViewModelTest {
         assertFalse(viewModel.uiState.value.isLoading)
         assertTrue(viewModel.uiState.value.photos.isEmpty())
         assertEquals(
-            "Unable to load photos. Please try again.",
-            viewModel.uiState.value.errorMessage,
+            R.string.photos_load_error,
+            viewModel.uiState.value.errorMessageResId,
         )
     }
 
@@ -106,7 +107,7 @@ class PhotosViewModelTest {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
-        assertNull(viewModel.uiState.value.errorMessage)
+        assertNull(viewModel.uiState.value.errorMessageResId)
     }
 
     private fun createViewModel(): PhotosViewModel = PhotosViewModel(

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.sbtechnicaltest.feature.photos.domain.model.PhotoItem
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUseCase
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
+import com.example.sbtechnicaltest.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +50,7 @@ class PhotosViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = true,
-                    errorMessage = null,
+                    errorMessageResId = null,
                 )
             }
 
@@ -72,14 +73,10 @@ class PhotosViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             photos = emptyList(),
-                            errorMessage = LOAD_ERROR_MESSAGE,
+                            errorMessageResId = R.string.photos_load_error,
                         )
                     }
                 }
         }
-    }
-
-    private companion object {
-        const val LOAD_ERROR_MESSAGE = "Unable to load photos. Please try again."
     }
 }
