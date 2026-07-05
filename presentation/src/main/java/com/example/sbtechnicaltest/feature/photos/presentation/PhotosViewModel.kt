@@ -7,14 +7,20 @@ import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUse
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
 import com.example.sbtechnicaltest.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class PhotosViewModel @Inject constructor(
     private val getPhotosUseCase: GetPhotosUseCase,
@@ -24,10 +30,13 @@ class PhotosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PhotosUiState())
     val uiState: StateFlow<PhotosUiState> = _uiState.asStateFlow()
 
+    private val searchQueries = MutableStateFlow("")
     private var allPhotos: List<PhotoItem> = emptyList()
+    private var appliedSearchQuery: String = ""
     private var loadJob: Job? = null
 
     init {
+        observeSearchQueries()
         loadPhotos()
     }
 
@@ -35,13 +44,31 @@ class PhotosViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(
                 searchQuery = value,
-                photos = filterPhotosUseCase(allPhotos, value),
             )
         }
+        searchQueries.value = value
     }
 
     fun onRetryClicked() {
         loadPhotos()
+    }
+
+    private fun observeSearchQueries() {
+        viewModelScope.launch {
+            searchQueries
+                .drop(1)
+                .debounce(SEARCH_DEBOUNCE_MILLIS)
+                .map(String::trim)
+                .distinctUntilChanged()
+                .collect { query ->
+                    appliedSearchQuery = query
+                    _uiState.update {
+                        it.copy(
+                            photos = filterPhotosUseCase(allPhotos, query),
+                        )
+                    }
+                }
+        }
     }
 
     private fun loadPhotos() {
@@ -62,7 +89,7 @@ class PhotosViewModel @Inject constructor(
                             isLoading = false,
                             photos = filterPhotosUseCase(
                                 photos = photos,
-                                query = currentState.searchQuery,
+                                query = appliedSearchQuery,
                             ),
                         )
                     }
@@ -78,5 +105,9 @@ class PhotosViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private companion object {
+        const val SEARCH_DEBOUNCE_MILLIS = 300L
     }
 }

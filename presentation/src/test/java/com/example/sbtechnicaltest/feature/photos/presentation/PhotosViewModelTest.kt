@@ -6,10 +6,14 @@ import com.example.sbtechnicaltest.feature.photos.domain.usecase.FilterPhotosUse
 import com.example.sbtechnicaltest.feature.photos.domain.usecase.GetPhotosUseCase
 import com.example.sbtechnicaltest.presentation.R
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -80,7 +84,7 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `search query filters loaded photos`() = runTest {
+    fun `search query updates immediately and filters after debounce`() = runTest {
         coEvery { getPhotosUseCase.invoke() } returns Result.success(photos)
         val viewModel = createViewModel()
         advanceUntilIdle()
@@ -88,7 +92,47 @@ class PhotosViewModelTest {
         viewModel.onSearchQueryChanged("city")
 
         assertEquals("city", viewModel.uiState.value.searchQuery)
+        assertEquals(photos, viewModel.uiState.value.photos)
+
+        advanceTimeBy(299)
+        runCurrent()
+        assertEquals(photos, viewModel.uiState.value.photos)
+
+        advanceTimeBy(1)
+        runCurrent()
         assertEquals(listOf(photos[1]), viewModel.uiState.value.photos)
+
+        viewModel.onSearchQueryChanged("city")
+        advanceTimeBy(300)
+        runCurrent()
+
+        verify(exactly = 1) {
+            filterPhotosUseCase.invoke(photos, "city")
+        }
+        coVerify(exactly = 1) {
+            getPhotosUseCase.invoke()
+        }
+    }
+
+    @Test
+    fun `clearing search restores all photos after debounce`() = runTest {
+        coEvery { getPhotosUseCase.invoke() } returns Result.success(photos)
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onSearchQueryChanged("city")
+        advanceTimeBy(300)
+        runCurrent()
+        assertEquals(listOf(photos[1]), viewModel.uiState.value.photos)
+
+        viewModel.onSearchQueryChanged("")
+
+        assertEquals("", viewModel.uiState.value.searchQuery)
+        assertEquals(listOf(photos[1]), viewModel.uiState.value.photos)
+
+        advanceTimeBy(300)
+        runCurrent()
+        assertEquals(photos, viewModel.uiState.value.photos)
     }
 
     @Test
