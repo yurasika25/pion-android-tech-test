@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
 import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
-import com.example.sbtechnicaltest.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -77,7 +76,7 @@ class PhotosViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = true,
-                    errorMessageResId = null,
+                    errorMessage = null,
                 )
             }
 
@@ -94,13 +93,13 @@ class PhotosViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure {
+                .onFailure { error ->
                     allPhotos = emptyList()
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             photos = emptyList(),
-                            errorMessageResId = R.string.photos_load_error,
+                            errorMessage = error.message,
                         )
                     }
                 }

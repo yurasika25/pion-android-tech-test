@@ -4,7 +4,6 @@ import com.example.sbtechnicaltest.MainDispatcherRule
 import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
 import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
-import com.example.sbtechnicaltest.presentation.R
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -63,7 +62,7 @@ class PhotosViewModelTest {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
-        assertNull(viewModel.uiState.value.errorMessageResId)
+        assertNull(viewModel.uiState.value.errorMessage)
     }
 
     @Test
@@ -78,8 +77,8 @@ class PhotosViewModelTest {
         assertFalse(viewModel.uiState.value.isLoading)
         assertTrue(viewModel.uiState.value.photos.isEmpty())
         assertEquals(
-            R.string.photos_load_error,
-            viewModel.uiState.value.errorMessageResId,
+            "Network failed",
+            viewModel.uiState.value.errorMessage,
         )
     }
 
@@ -151,7 +150,7 @@ class PhotosViewModelTest {
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
-        assertNull(viewModel.uiState.value.errorMessageResId)
+        assertNull(viewModel.uiState.value.errorMessage)
     }
 
     private fun createViewModel(): PhotosViewModel = PhotosViewModel(

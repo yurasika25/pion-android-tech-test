@@ -163,11 +163,11 @@ fun PhotosScreen(
                     .fillMaxWidth()
                     .weight(1f),
             ) {
-                val errorMessageResId = uiState.errorMessageResId
+                val errorMessage = uiState.errorMessage
                 when {
                     uiState.isLoading -> LoadingContent()
-                    errorMessageResId != null -> ErrorContent(
-                        message = stringResource(errorMessageResId),
+                    errorMessage != null -> ErrorContent(
+                        message = errorMessage,
                         onRetryClicked = onRetryClicked,
                     )
                     uiState.photos.isEmpty() -> EmptyContent()
@@ -330,7 +330,7 @@ private fun PhotosScreenErrorPreview() {
     PhotosScreenPreviewContent(
         uiState = PhotosUiState(
             isLoading = false,
-            errorMessageResId = R.string.photos_load_error,
+            errorMessage = stringResource(R.string.photos_load_error),
         ),
     )
 }
