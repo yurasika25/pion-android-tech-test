@@ -41,6 +41,7 @@ import com.example.sbtechnicaltest.presentation.R
 import com.example.sbtechnicaltest.design.SBTechnicalTestTheme
 import com.example.sbtechnicaltest.design.StudentBeansAccent
 import com.example.sbtechnicaltest.design.StudentBeansBackground
+import com.example.sbtechnicaltest.design.StudentBeansHintText
 import com.example.sbtechnicaltest.design.StudentBeansPrimaryText
 import com.example.sbtechnicaltest.design.StudentBeansSecondaryText
 import com.example.sbtechnicaltest.design.StudentBeansSurface
@@ -197,7 +198,7 @@ private fun LoginTextField(
         placeholder = {
             Text(
                 text = placeholder,
-                color = StudentBeansPrimaryText,
+                color = StudentBeansHintText,
                 fontSize = 18.sp,
             )
         },
@@ -227,8 +228,8 @@ private fun LoginTextField(
             focusedBorderColor = StudentBeansAccent,
             unfocusedBorderColor = Color.Transparent,
             cursorColor = StudentBeansAccent,
-            focusedPlaceholderColor = StudentBeansPrimaryText,
-            unfocusedPlaceholderColor = StudentBeansPrimaryText,
+            focusedPlaceholderColor = StudentBeansHintText,
+            unfocusedPlaceholderColor = StudentBeansHintText,
         ),
     )
 }
