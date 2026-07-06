@@ -1,65 +1,168 @@
-# Student Beans Android Task
+# Pion Android Technical Test
 
-Homework exercise for candidates.
+This project is a simple Android application built for the Pion / Student Beans Android technical exercise. It contains a login screen with validation and a photos/products screen powered by the DummyJSON API.
 
-## Instructions
+The solution focuses on Jetpack Compose, MVVM, Clean Architecture, clear module separation, testability, and modern Android development practices. The completed implementation is available on the `develop` branch.
 
-Please work towards building a simple app with the following acceptance criteria. 
-Please complete as many as you can, and feel free to add anything that will help you demonstrate advanced knowledge.
-Make sure you clone the repository and send us a compressed package (zip) of your solution.
+## Features
 
-### Core Focus Areas:
+- Login screen built entirely with Jetpack Compose.
+- Email and password validation with inline, user-friendly errors.
+- Navigation from Login to Photos after successful validation.
+- Product loading from the DummyJSON API.
+- Product thumbnail and title display using Coil and `LazyColumn`.
+- Real-time local title filtering with a 300 ms debounce.
+- Loading, retryable error, and empty states.
+- Toolbar and system back navigation from Photos to Log in.
+- Compose previews for the main Login and Photos UI states.
+- User-facing text stored in Android string resources.
+- Dark status and navigation bar icons on light backgrounds.
+- Responsive, scrollable login layout for compact screens and the software keyboard.
 
-UI: Use Jetpack Compose exclusively for the entire user interface.
+## Screenshots
 
-Architecture: Implement the MVVM (Model-View-ViewModel) pattern.
+| Login | Photos |
+|---|---|
+| <img src="docs/screenshots/login.png" width="260" /> | <img src="docs/screenshots/photos.png" width="260" /> |
 
-Best Practices: Focus on Clean Architecture principles (e.g., clear separation of concerns, use of Usecases/Interactors is encouraged).
+## Project Structure
 
-Modern Libraries: Leverage the latest stable AndroidX and Jetpack libraries.
+<img src="docs/screenshots/modules.png" width="320" />
 
-### Technical Requirements & Screens
+## Architecture
 
-1. Login Screen
+The project follows MVVM and Clean Architecture:
 
-Design: Implement a clean, responsive login screen using Compose.
+```text
+Compose UI
+    ↓
+ViewModel
+    ↓
+UseCase / Interactor
+    ↓
+Repository Interface
+    ↓
+Repository Implementation
+    ↓
+Retrofit API
+```
 
-Validation:
+- Compose observes immutable `StateFlow` state exposed by ViewModels.
+- ViewModels coordinate UI state and depend on domain UseCases rather than data implementations.
+- UseCases apply business rules through repository abstractions.
+- The data layer implements domain repository interfaces.
+- Remote DTOs are mapped to domain models before leaving the data layer.
+- Retrofit, OkHttp, API contracts, and network configuration remain isolated from presentation and domain code.
 
-On tapping "Log in", validate that both fields (Username/Email and Password) are not empty.
+## Module Structure
 
-Show inline, user-friendly error messages below the input fields if validation fails.
+### `:app`
 
-Navigation: Upon successful validation, navigate to the Photos Screen.
+- Application entry point and `MainActivity`.
+- Hilt application setup and app-level dependency wiring.
+- Navigation Compose host connecting Login and Photos.
 
-2. Photos Screen
+### `:presentation`
 
-API Source: Display data from https://dummyjson.com/products?select=id,title,thumbnail
+- Jetpack Compose screens and reusable UI components.
+- ViewModels, UI state, and one-off UI events.
+- Main-state Compose previews.
+- Depends only on `:domain`.
 
-List Implementation: Use a Lazy Column or Lazy Vertical Grid in Compose to display the data efficiently.
+### `:domain`
 
-Item Display: Each item must clearly show:
+- Domain models and repository interfaces.
+- `GetPhotosUseCase` and `FilterPhotosUseCase`.
+- Business rules with no Android or networking framework dependencies.
 
-- The image from the thumbnail. Use a dedicated Compose image loading library (like Coil or Glide/Accompanist) for this.
+### `:data`
 
-- The title.
+- Retrofit API, response DTOs, and DTO-to-domain mappers.
+- Repository implementations.
+- Hilt network and repository modules.
+- OkHttp timeouts, debug logging, `BuildConfig.BASE_URL`, and reusable `safeApiCall` handling.
 
-Filtering/Search 🔍
+```text
+:app          -> :presentation, :domain, :data
+:presentation -> :domain
+:data         -> :domain
+:domain       -> no app module dependencies
+```
 
-Add a search bar at the top of the screen.
+`:presentation` does not depend on `:data`. The `:domain` module does not depend on Android UI, Retrofit, OkHttp, DTOs, or presentation code.
 
-The list must dynamically filter in real-time as the user types, matching against the title field. Bonus points for debounce implementation to optimize API or list filtering calls.
+## Tech Stack
 
+- Kotlin
+- Jetpack Compose and Material 3
+- Navigation Compose
+- AndroidX ViewModel and Lifecycle
+- Kotlin Coroutines, Flow, and StateFlow
+- Retrofit and OkHttp
+- Coil
+- Hilt
+- Gradle BuildConfig
+- JUnit and MockK
 
-State Handling & Loading 🔄
+## API
 
-Implement and visually show Loading (e.g., a CircularProgressIndicator) while the API request is in flight.
+The application requests only the product ID, title, and thumbnail:
 
-Implement robust Error Handling (e.g., a Snackbar or a persistent error message with a "Retry" button) for network or API errors.
+```text
+https://dummyjson.com/products?select=id,title,thumbnail
+```
 
+The returned products are displayed as photo rows. Search operates locally against the already loaded titles and does not trigger additional network requests.
 
-Show us your best code!
+## Error Handling
 
-## Designs
+Network calls use a small reusable `safeApiCall` helper. It maps timeout, no-internet, I/O, HTTP, and unexpected failures to user-friendly messages while rethrowing `CancellationException` so coroutine cancellation remains correct. Repositories can provide feature-specific fallback messages, and the Photos UI exposes a Retry action.
 
-<img src="Login.png" width="400"> <img src="Photos.png" width="400">
+## Build Configuration
+
+The DummyJSON base URL is defined in `gradle.properties`, exposed to the data module through `BuildConfig.BASE_URL`, and consumed by `NetworkModule`. No base URL is hardcoded in Kotlin source, and all Retrofit/OkHttp configuration remains in `:data`.
+
+## Testing
+
+The test suite includes:
+
+- Domain tests for photo loading and filtering UseCases.
+- Presentation tests for login validation, navigation events, photo states, retry, and debounced search.
+- Data repository tests for DTO mapping and common network failure messages.
+- Fake repositories and MockK dependencies; tests never call the real network.
+- Coroutine virtual time where timing behavior is under test.
+
+Run the full build and test suite:
+
+```bash
+./gradlew clean assembleDebug
+./gradlew test
+```
+
+Useful focused commands:
+
+```bash
+./gradlew :domain:test
+./gradlew :presentation:testDebugUnitTest
+./gradlew :data:testDebugUnitTest
+```
+
+## How to Run
+
+1. Clone the repository.
+2. Check out the `develop` branch.
+3. Open the repository root in Android Studio.
+4. Sync Gradle and run the `app` configuration.
+
+```bash
+git checkout develop
+./gradlew clean assembleDebug
+```
+
+## AI Usage Disclosure
+
+I used ChatGPT and Codex as development assistants during this exercise. They were used to help plan the implementation, generate and review unit tests, improve documentation, support refactoring, configure API/network handling, create the Navigation Host structure, and refine the reusable `safeApiCall` API error handling approach. All final implementation decisions, architecture choices, code changes, and submitted work were reviewed and validated by me.
+
+## Notes
+
+The project prioritises clarity, maintainability, and correctness over unnecessary complexity. The implementation is intentionally small and easy to review for the scope of the exercise.
