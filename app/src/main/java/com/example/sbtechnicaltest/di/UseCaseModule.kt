@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/** Provides domain use cases while keeping repository implementations hidden behind contracts. */
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {

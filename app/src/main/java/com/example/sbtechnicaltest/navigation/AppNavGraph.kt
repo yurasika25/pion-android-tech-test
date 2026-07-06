@@ -14,6 +14,11 @@ import com.example.sbtechnicaltest.feature.login.presentation.LoginUiEvent
 import com.example.sbtechnicaltest.feature.login.presentation.LoginViewModel
 import com.example.sbtechnicaltest.feature.photos.presentation.PhotosRoute
 
+/**
+ * Defines Login as the start destination and handles navigation to Photos after validation.
+ *
+ * Popping the Photos destination, including from its toolbar back action, returns to Login.
+ */
 @Composable
 fun AppNavGraph(
     navController: NavHostController = rememberNavController(),

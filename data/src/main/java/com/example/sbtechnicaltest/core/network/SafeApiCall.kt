@@ -6,6 +6,12 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+/**
+ * Executes API work and converts common network failures into user-readable [Result] failures.
+ *
+ * Coroutine cancellation is rethrown. HTTP and unknown failures use the repository-specific
+ * [fallbackMessage], while timeout, offline, and network failures use shared messages.
+ */
 internal suspend fun <T> safeApiCall(
     fallbackMessage: String = "Something went wrong. Please try again.",
     block: suspend () -> T,

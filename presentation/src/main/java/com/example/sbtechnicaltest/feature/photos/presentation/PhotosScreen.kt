@@ -57,6 +57,9 @@ import com.example.sbtechnicaltest.design.StudentBeansPrimaryText
 import com.example.sbtechnicaltest.design.StudentBeansSecondaryText
 import com.example.sbtechnicaltest.design.StudentBeansSurface
 
+/**
+ * Hilt-aware route that collects [PhotosViewModel] state and forwards UI actions.
+ */
 @Composable
 fun PhotosRoute(
     onBackClick: () -> Unit,
@@ -72,6 +75,9 @@ fun PhotosRoute(
     )
 }
 
+/**
+ * Stateless Photos UI for search, loading, content, empty, and retryable error states.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhotosScreen(
@@ -291,6 +297,7 @@ private fun PhotoCard(
     }
 }
 
+// Preview states exercise the stateless UI without Hilt, navigation, or network access.
 @Preview(
     name = "Photos - Loading",
     showBackground = true,

@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/** Binds the data implementation to the domain repository contract for constructor injection. */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {

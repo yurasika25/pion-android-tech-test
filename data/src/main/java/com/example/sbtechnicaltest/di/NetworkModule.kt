@@ -13,6 +13,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * Provides the singleton Retrofit stack with explicit timeouts and debug-only body logging.
+ *
+ * Retrofit reads its base URL from the data module's generated [BuildConfig.BASE_URL].
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

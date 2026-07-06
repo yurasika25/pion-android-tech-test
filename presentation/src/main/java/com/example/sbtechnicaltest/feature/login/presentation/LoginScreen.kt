@@ -46,6 +46,9 @@ import com.example.sbtechnicaltest.design.StudentBeansPrimaryText
 import com.example.sbtechnicaltest.design.StudentBeansSecondaryText
 import com.example.sbtechnicaltest.design.StudentBeansSurface
 
+/**
+ * Stateless Login UI rendered from [LoginUiState] and event callbacks supplied by navigation.
+ */
 @Composable
 fun LoginScreen(
     uiState: LoginUiState,
@@ -68,6 +71,9 @@ fun LoginScreen(
     }
 }
 
+/**
+ * Keeps the form width-constrained and scrollable so all controls remain reachable on short screens.
+ */
 @Composable
 private fun LoginContent(
     uiState: LoginUiState,
@@ -234,6 +240,7 @@ private fun LoginTextField(
     )
 }
 
+// Preview states validate the stateless layout without navigation, ViewModels, or runtime services.
 @Preview(
     name = "Login - Default",
     showBackground = true,

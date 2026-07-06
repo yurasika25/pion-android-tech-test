@@ -2,6 +2,7 @@ package com.example.sbtechnicaltest.feature.photos.usecase
 
 import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 
+/** Applies trimmed, case-insensitive title filtering to an already loaded photo list. */
 class FilterPhotosUseCase {
 
     operator fun invoke(

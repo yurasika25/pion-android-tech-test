@@ -6,6 +6,9 @@ import com.example.sbtechnicaltest.feature.photos.mapper.toDomain
 import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
 import javax.inject.Inject
 
+/**
+ * Implements the domain repository by executing the API safely and mapping DTOs to domain models.
+ */
 class PhotosRepositoryImpl @Inject constructor(
     private val api: PhotosApi,
 ) : PhotosRepository {

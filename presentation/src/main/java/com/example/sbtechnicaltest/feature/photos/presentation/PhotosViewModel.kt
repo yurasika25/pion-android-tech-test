@@ -19,6 +19,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Coordinates photo loading, retry, and debounced local title filtering for the Photos screen.
+ *
+ * It depends only on domain use cases and retains the loaded list so search never triggers API calls.
+ */
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class PhotosViewModel @Inject constructor(
@@ -54,6 +59,7 @@ class PhotosViewModel @Inject constructor(
 
     private fun observeSearchQueries() {
         viewModelScope.launch {
+            // Query text updates immediately; only local filtering waits for the debounce window.
             searchQueries
                 .drop(1)
                 .debounce(SEARCH_DEBOUNCE_MILLIS)
