@@ -11,6 +11,7 @@ The solution focuses on Jetpack Compose, MVVM, Clean Architecture, clear module 
 - Navigation from Login to Photos after successful validation.
 - Product loading from the DummyJSON API.
 - Product thumbnail and title display using Coil and `LazyColumn`.
+- Manual infinite-scroll pagination using DummyJSON `limit` and `skip`.
 - Real-time local title filtering with a 300 ms debounce.
 - Loading, retryable error, and empty states.
 - Toolbar and system back navigation from Photos to Log in.
@@ -109,10 +110,20 @@ Retrofit API
 The application requests only the product ID, title, and thumbnail:
 
 ```text
-https://dummyjson.com/products?select=id,title,thumbnail
+https://dummyjson.com/products?limit=20&skip=0&select=id,title,thumbnail
 ```
 
-The returned products are displayed as photo rows. Search operates locally against the already loaded titles and does not trigger additional network requests.
+The app loads 20 products at a time and requests the next offset as the user approaches the end of the list:
+
+```text
+First page:  limit=20&skip=0
+Second page: limit=20&skip=20
+Third page:  limit=20&skip=40
+```
+
+The response's `total`, `skip`, and `limit` metadata determines whether another page is available. Initial failures use the full-screen Retry state; later-page failures keep the existing rows visible and provide a footer Retry action.
+
+Search operates locally against all pages loaded so far and does not trigger additional network requests.
 
 ## Error Handling
 
@@ -127,8 +138,8 @@ The DummyJSON base URL is defined in `gradle.properties`, exposed to the data mo
 The test suite includes:
 
 - Domain tests for photo loading and filtering UseCases.
-- Presentation tests for login validation, navigation events, photo states, retry, and debounced search.
-- Data repository tests for DTO mapping and common network failure messages.
+- Presentation tests for login validation, navigation events, paged photo states, retry, and debounced search.
+- Data repository tests for paged DTO mapping and common network failure messages.
 - Fake repositories and MockK dependencies; tests never call the real network.
 - Coroutine virtual time where timing behavior is under test.
 

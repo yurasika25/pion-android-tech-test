@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -32,8 +33,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +59,8 @@ import com.example.sbtechnicaltest.design.StudentBeansBackground
 import com.example.sbtechnicaltest.design.StudentBeansPrimaryText
 import com.example.sbtechnicaltest.design.StudentBeansSecondaryText
 import com.example.sbtechnicaltest.design.StudentBeansSurface
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 /**
  * Hilt-aware route that collects [PhotosViewModel] state and forwards UI actions.
@@ -71,12 +76,13 @@ fun PhotosRoute(
         uiState = uiState,
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onRetryClicked = viewModel::onRetryClicked,
+        onLoadMore = viewModel::onLoadMoreRequested,
         onBackClick = onBackClick,
     )
 }
 
 /**
- * Stateless Photos UI for search, loading, content, empty, and retryable error states.
+ * Stateless Photos UI with local search, infinite-scroll loading, and retryable error states.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,6 +90,7 @@ fun PhotosScreen(
     uiState: PhotosUiState,
     onSearchQueryChanged: (String) -> Unit,
     onRetryClicked: () -> Unit,
+    onLoadMore: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -177,7 +184,13 @@ fun PhotosScreen(
                         onRetryClicked = onRetryClicked,
                     )
                     uiState.photos.isEmpty() -> EmptyContent()
-                    else -> PhotosList(photos = uiState.photos)
+                    else -> PhotosList(
+                        photos = uiState.photos,
+                        isLoadingMore = uiState.isLoadingMore,
+                        loadMoreErrorMessage = uiState.loadMoreErrorMessage,
+                        hasMorePages = uiState.hasMorePages,
+                        onLoadMore = onLoadMore,
+                    )
                 }
             }
         }
@@ -240,9 +253,40 @@ private fun EmptyContent() {
 @Composable
 private fun PhotosList(
     photos: List<PhotoItem>,
+    isLoadingMore: Boolean,
+    loadMoreErrorMessage: String?,
+    hasMorePages: Boolean,
+    onLoadMore: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(
+        listState,
+        photos.size,
+        isLoadingMore,
+        loadMoreErrorMessage,
+        hasMorePages,
+    ) {
+        snapshotFlow {
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+            val itemCount = listState.layoutInfo.totalItemsCount
+            itemCount > 0 &&
+                lastVisibleItemIndex >= itemCount - LOAD_MORE_THRESHOLD &&
+                !isLoadingMore &&
+                loadMoreErrorMessage == null &&
+                hasMorePages
+        }
+            .distinctUntilChanged()
+            .filter { shouldLoadMore -> shouldLoadMore }
+            .collect {
+                onLoadMore()
+            }
+    }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 24.dp),
     ) {
@@ -251,6 +295,59 @@ private fun PhotosList(
             key = PhotoItem::id,
         ) { photo ->
             PhotoCard(photo = photo)
+        }
+
+        if (isLoadingMore) {
+            item(key = "load-more-progress") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(28.dp),
+                        color = StudentBeansAccent,
+                    )
+                }
+            }
+        } else if (loadMoreErrorMessage != null) {
+            item(key = "load-more-error") {
+                LoadMoreErrorContent(
+                    message = loadMoreErrorMessage,
+                    onRetryClicked = onLoadMore,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadMoreErrorContent(
+    message: String,
+    onRetryClicked: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = message,
+            color = StudentBeansSecondaryText,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Button(
+            onClick = onRetryClicked,
+            modifier = Modifier.padding(top = 8.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = StudentBeansAccent,
+                contentColor = Color.White,
+            ),
+        ) {
+            Text(stringResource(R.string.photos_retry_button))
         }
     }
 }
@@ -363,7 +460,10 @@ private fun PhotosScreenPreviewContent(
             uiState = uiState,
             onSearchQueryChanged = {},
             onRetryClicked = {},
+            onLoadMore = {},
             onBackClick = {},
         )
     }
 }
+
+private const val LOAD_MORE_THRESHOLD = 3

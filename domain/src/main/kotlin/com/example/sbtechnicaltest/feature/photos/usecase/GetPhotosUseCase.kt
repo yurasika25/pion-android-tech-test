@@ -1,11 +1,17 @@
 package com.example.sbtechnicaltest.feature.photos.usecase
 
-import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.model.PhotosPage
 import com.example.sbtechnicaltest.feature.photos.repository.PhotosRepository
 
-/** Presentation-to-domain boundary for loading photos through [PhotosRepository]. */
+/** Loads the requested photo page through the domain [PhotosRepository] abstraction. */
 class GetPhotosUseCase(
     private val repository: PhotosRepository,
 ) {
-    suspend operator fun invoke(): Result<List<PhotoItem>> = repository.getPhotos()
+    suspend operator fun invoke(
+        limit: Int,
+        skip: Int,
+    ): Result<PhotosPage> = repository.getPhotos(
+        limit = limit,
+        skip = skip,
+    )
 }

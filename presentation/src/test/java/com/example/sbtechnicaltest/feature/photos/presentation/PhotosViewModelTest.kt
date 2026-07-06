@@ -2,6 +2,7 @@ package com.example.sbtechnicaltest.feature.photos.presentation
 
 import com.example.sbtechnicaltest.MainDispatcherRule
 import com.example.sbtechnicaltest.feature.photos.model.PhotoItem
+import com.example.sbtechnicaltest.feature.photos.model.PhotosPage
 import com.example.sbtechnicaltest.feature.photos.usecase.FilterPhotosUseCase
 import com.example.sbtechnicaltest.feature.photos.usecase.GetPhotosUseCase
 import io.mockk.coEvery
@@ -35,6 +36,12 @@ class PhotosViewModelTest {
         PhotoItem(1, "Golden sunrise", "https://example.com/1.jpg"),
         PhotoItem(2, "City skyline", "https://example.com/2.jpg"),
     )
+    private val firstPage = PhotosPage(
+        photos = photos,
+        total = photos.size,
+        skip = 0,
+        limit = 20,
+    )
 
     @Before
     fun setUp() {
@@ -55,7 +62,9 @@ class PhotosViewModelTest {
 
     @Test
     fun `successful load exposes photos`() = runTest {
-        coEvery { getPhotosUseCase.invoke() } returns Result.success(photos)
+        coEvery {
+            getPhotosUseCase.invoke(limit = 20, skip = 0)
+        } returns Result.success(firstPage)
 
         val viewModel = createViewModel()
         advanceUntilIdle()
@@ -63,12 +72,13 @@ class PhotosViewModelTest {
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
         assertNull(viewModel.uiState.value.errorMessage)
+        assertFalse(viewModel.uiState.value.hasMorePages)
     }
 
     @Test
     fun `failed load exposes retryable error`() = runTest {
         coEvery {
-            getPhotosUseCase.invoke()
+            getPhotosUseCase.invoke(any(), any())
         } returns Result.failure(IllegalStateException("Network failed"))
 
         val viewModel = createViewModel()
@@ -84,7 +94,9 @@ class PhotosViewModelTest {
 
     @Test
     fun `search query updates immediately and filters after debounce`() = runTest {
-        coEvery { getPhotosUseCase.invoke() } returns Result.success(photos)
+        coEvery {
+            getPhotosUseCase.invoke(any(), any())
+        } returns Result.success(firstPage)
         val viewModel = createViewModel()
         advanceUntilIdle()
 
@@ -109,13 +121,15 @@ class PhotosViewModelTest {
             filterPhotosUseCase.invoke(photos, "city")
         }
         coVerify(exactly = 1) {
-            getPhotosUseCase.invoke()
+            getPhotosUseCase.invoke(limit = 20, skip = 0)
         }
     }
 
     @Test
     fun `clearing search restores all photos after debounce`() = runTest {
-        coEvery { getPhotosUseCase.invoke() } returns Result.success(photos)
+        coEvery {
+            getPhotosUseCase.invoke(any(), any())
+        } returns Result.success(firstPage)
         val viewModel = createViewModel()
         advanceUntilIdle()
 
@@ -137,10 +151,10 @@ class PhotosViewModelTest {
     @Test
     fun `retry loads photos after failure`() = runTest {
         coEvery {
-            getPhotosUseCase.invoke()
+            getPhotosUseCase.invoke(any(), any())
         } returnsMany listOf(
             Result.failure(IllegalStateException("Network failed")),
-            Result.success(photos),
+            Result.success(firstPage),
         )
         val viewModel = createViewModel()
         advanceUntilIdle()
@@ -151,6 +165,69 @@ class PhotosViewModelTest {
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(photos, viewModel.uiState.value.photos)
         assertNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun `load more appends next page and stops at total`() = runTest {
+        val nextPhoto = PhotoItem(
+            id = 3,
+            title = "Forest path",
+            thumbnailUrl = "https://example.com/3.jpg",
+        )
+        coEvery {
+            getPhotosUseCase.invoke(limit = 20, skip = 0)
+        } returns Result.success(
+            firstPage.copy(total = 3),
+        )
+        coEvery {
+            getPhotosUseCase.invoke(limit = 20, skip = 2)
+        } returns Result.success(
+            PhotosPage(
+                photos = listOf(nextPhoto),
+                total = 3,
+                skip = 2,
+                limit = 20,
+            ),
+        )
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onLoadMoreRequested()
+        advanceUntilIdle()
+        viewModel.onLoadMoreRequested()
+        advanceUntilIdle()
+
+        assertEquals(photos + nextPhoto, viewModel.uiState.value.photos)
+        assertFalse(viewModel.uiState.value.isLoadingMore)
+        assertFalse(viewModel.uiState.value.hasMorePages)
+        coVerify(exactly = 1) {
+            getPhotosUseCase.invoke(limit = 20, skip = 2)
+        }
+    }
+
+    @Test
+    fun `load more failure keeps current photos and exposes footer error`() = runTest {
+        coEvery {
+            getPhotosUseCase.invoke(limit = 20, skip = 0)
+        } returns Result.success(
+            firstPage.copy(total = 4),
+        )
+        coEvery {
+            getPhotosUseCase.invoke(limit = 20, skip = 2)
+        } returns Result.failure(IllegalStateException("Next page failed"))
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onLoadMoreRequested()
+        advanceUntilIdle()
+
+        assertEquals(photos, viewModel.uiState.value.photos)
+        assertFalse(viewModel.uiState.value.isLoadingMore)
+        assertEquals(
+            "Next page failed",
+            viewModel.uiState.value.loadMoreErrorMessage,
+        )
+        assertTrue(viewModel.uiState.value.hasMorePages)
     }
 
     private fun createViewModel(): PhotosViewModel = PhotosViewModel(

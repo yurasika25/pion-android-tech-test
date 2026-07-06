@@ -20,9 +20,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Coordinates photo loading, retry, and debounced local title filtering for the Photos screen.
+ * Coordinates paged photo loading, retry, and debounced local title filtering for the Photos screen.
  *
- * It depends only on domain use cases and retains the loaded list so search never triggers API calls.
+ * The first request starts at offset zero; subsequent requests skip the accumulated item count until
+ * the API total is reached. Search filters all pages loaded so far and never triggers API calls.
+ * Initial and next-page failures are kept separate so pagination errors do not replace existing rows.
  */
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -41,7 +43,7 @@ class PhotosViewModel @Inject constructor(
 
     init {
         observeSearchQueries()
-        loadPhotos()
+        loadFirstPage()
     }
 
     fun onSearchQueryChanged(value: String) {
@@ -54,7 +56,56 @@ class PhotosViewModel @Inject constructor(
     }
 
     fun onRetryClicked() {
-        loadPhotos()
+        loadFirstPage()
+    }
+
+    fun onLoadMoreRequested() {
+        val currentState = _uiState.value
+        if (
+            currentState.isLoading ||
+            currentState.isLoadingMore ||
+            !currentState.hasMorePages ||
+            loadJob?.isActive == true
+        ) {
+            return
+        }
+
+        loadJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLoadingMore = true,
+                    loadMoreErrorMessage = null,
+                )
+            }
+
+            getPhotosUseCase(
+                limit = PAGE_SIZE,
+                skip = allPhotos.size,
+            )
+                .onSuccess { page ->
+                    allPhotos = allPhotos + page.photos
+                    _uiState.update {
+                        it.copy(
+                            isLoadingMore = false,
+                            photos = filterPhotosUseCase(
+                                photos = allPhotos,
+                                query = appliedSearchQuery,
+                            ),
+                            loadMoreErrorMessage = null,
+                            hasMorePages = page.photos.isNotEmpty() &&
+                                page.skip + page.photos.size < page.total,
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoadingMore = false,
+                            loadMoreErrorMessage = error.message,
+                        )
+                    }
+                }
+        }
     }
 
     private fun observeSearchQueries() {
@@ -76,26 +127,36 @@ class PhotosViewModel @Inject constructor(
         }
     }
 
-    private fun loadPhotos() {
+    private fun loadFirstPage() {
         loadJob?.cancel()
+        allPhotos = emptyList()
         loadJob = viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     isLoading = true,
+                    isLoadingMore = false,
+                    photos = emptyList(),
                     errorMessage = null,
+                    loadMoreErrorMessage = null,
+                    hasMorePages = true,
                 )
             }
 
-            getPhotosUseCase()
-                .onSuccess { photos ->
-                    allPhotos = photos
+            getPhotosUseCase(
+                limit = PAGE_SIZE,
+                skip = 0,
+            )
+                .onSuccess { page ->
+                    allPhotos = page.photos
                     _uiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
                             photos = filterPhotosUseCase(
-                                photos = photos,
+                                photos = allPhotos,
                                 query = appliedSearchQuery,
                             ),
+                            hasMorePages = page.photos.isNotEmpty() &&
+                                page.skip + page.photos.size < page.total,
                         )
                     }
                 }
@@ -106,6 +167,7 @@ class PhotosViewModel @Inject constructor(
                             isLoading = false,
                             photos = emptyList(),
                             errorMessage = error.message,
+                            hasMorePages = false,
                         )
                     }
                 }
@@ -113,6 +175,7 @@ class PhotosViewModel @Inject constructor(
     }
 
     private companion object {
+        const val PAGE_SIZE = 20
         const val SEARCH_DEBOUNCE_MILLIS = 300L
     }
 }
